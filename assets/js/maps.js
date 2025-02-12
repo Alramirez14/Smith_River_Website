@@ -327,5 +327,14 @@ legend.onAdd = function(map) {
 // Add the legend to the map
 legend.addTo(map);
 
+map.addControl(L.control.fullscreen({
+    position: 'bottomleft',  // Position of the fullscreen button
+    title: 'Show Fullscreen',  // Title of the fullscreen button
+    titleCancel: 'Exit Fullscreen',  // Title of the button when in fullscreen mode
+    content: '↗',  // Icon/content of the fullscreen button
+}));
+
+map.fitBounds(layer_Smith_river_streams_1.getBounds());
+
 
 

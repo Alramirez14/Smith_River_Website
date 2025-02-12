@@ -11,7 +11,6 @@ body {
     display: flex;
     justify-content: center;  /* Centers map horizontally */
     align-items: center;      /* Centers map vertically */
-    height: 100vh;            /* Full viewport height */
 }
 
 .leaflet-popup-content-wrapper {
@@ -25,4 +24,9 @@ body {
 
 .leaflet-popup-tip {
     display: none; /* Optionally, hide the popup tip if not needed */
+}
+
+#map {
+    height: 400px;  /* Define the height */
+    width: 1000px;    /* Set width to fill its container */
 }
