@@ -38,8 +38,11 @@ var zoomControl = L.control.zoom({
 var bounds_group = new L.featureGroup([]);
 function setBounds() {
 }
+// Create a new pane for the ESRI Satellite Imagery layer
 map.createPane('pane_ESRISatelliteArcGISWorld_Imagery_0');
 map.getPane('pane_ESRISatelliteArcGISWorld_Imagery_0').style.zIndex = 400;
+
+// Create the ESRI Satellite Layer
 var layer_ESRISatelliteArcGISWorld_Imagery_0 = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     pane: 'pane_ESRISatelliteArcGISWorld_Imagery_0',
     opacity: 0.86,
@@ -49,20 +52,70 @@ var layer_ESRISatelliteArcGISWorld_Imagery_0 = L.tileLayer('https://server.arcgi
     minNativeZoom: 0,
     maxNativeZoom: 19
 });
-layer_ESRISatelliteArcGISWorld_Imagery_0;
-map.addLayer(layer_ESRISatelliteArcGISWorld_Imagery_0);
+
+// Create a new pane for the Mapbox Imagery layer
+map.createPane('pane_MapboxImagery');
+map.getPane('pane_MapboxImagery').style.zIndex = 400;
+
+// Set your Mapbox access token
+var accessToken = 'pk.eyJ1IjoiYXJhbWk1NCIsImEiOiJjbTZ6ZG53OXQwM24zMm1wcHFpanhxbDdqIn0.iw8ih5GLFA7ZRz8QeqrLaQ';  // Replace with your Mapbox access token
+
+// Create the Mapbox layer
+var layer_MapboxImagery = L.tileLayer(
+    `https://api.mapbox.com/styles/v1/arami54/cm6zm6d8700hs01re71r597en/draft/tiles/{z}/{x}/{y}?access_token=${accessToken}`, {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
+      '<a href="https://www.mapbox.com/about/maps/">Imagery © Mapbox</a>',
+    pane: 'pane_MapboxImagery',
+    opacity: 0.86,
+    minZoom: 1,
+    maxZoom: 18, // Updated max zoom based on Mapbox tileset capabilities
+    minNativeZoom: 0,
+    maxNativeZoom: 19
+});
+
+// Initially add the Mapbox layer
+map.addLayer(layer_MapboxImagery);
+
+// Create a control button to toggle between the two layers
+var baseMaps = {
+    "ESRI Satellite": layer_ESRISatelliteArcGISWorld_Imagery_0,
+    "Mapbox Imagery": layer_MapboxImagery
+};
+
+L.control.layers(baseMaps).addTo(map);
+
+// Function to toggle between the layers
+var currentLayer = "Mapbox Imagery";  // Set default layer
+
+function toggleLayers() {
+    if (currentLayer === "Mapbox Imagery") {
+        map.removeLayer(layer_MapboxImagery);
+        map.addLayer(layer_ESRISatelliteArcGISWorld_Imagery_0);
+        currentLayer = "ESRI Satellite";
+    } else {
+        map.removeLayer(layer_ESRISatelliteArcGISWorld_Imagery_0);
+        map.addLayer(layer_MapboxImagery);
+        currentLayer = "Mapbox Imagery";
+    }
+}
+
+// Define the popup function for your streams
 function pop_Smith_river_streams_1(feature, layer) {
     var popupContent = '<table>\
             <tr>\
-                <td colspan="2">' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
+                <td colspan="2"><i>Stream Name: </i>' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
             </tr>\
         </table>';
+    
     var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+    
     layer.on('popupopen', function(e) {
         addClassToPopupIfMedia(content, e.popup);
     });
+    
     layer.bindPopup(content, { maxHeight: 400 });
 }
+
 
 function style_Smith_river_streams_1_0() {
     return {
@@ -94,7 +147,7 @@ map.addLayer(layer_Smith_river_streams_1);
 function pop_smith_river_alone_2(feature, layer) {
     var popupContent = '<table>\
             <tr>\
-                <td colspan="2">' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
+                <td colspan="2"><i>Stream Name: </i>' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
             </tr>\
         </table>';
     var content = removeEmptyRowsFromPopupContent(popupContent, feature);
@@ -134,14 +187,14 @@ map.addLayer(layer_smith_river_alone_2);
 function pop_Catchment_polygons_3(feature, layer) {
     var popupContent = '<table>\
             <tr>\
-                <td colspan="2">' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
+                <td colspan="2"><i>Catchment Area: </i>' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
             </tr>\
         </table>';
     var content = removeEmptyRowsFromPopupContent(popupContent, feature);
     layer.on('popupopen', function(e) {
         addClassToPopupIfMedia(content, e.popup);
     });
-    layer.bindPopup(content, { maxHeight: 400 });
+    layer.bindPopup(content, { outerHeight: 200 });
 }
 
 function style_Catchment_polygons_3_0() {
@@ -180,13 +233,13 @@ map.addLayer(layer_Catchment_polygons_3);
 function pop_Study_sites_4(feature, layer) {
     var popupContent = '<table>\
             <tr>\
-                <td colspan="2">' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
+                <td colspan="2"> <i>Sample Site: </i> '+ (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
             </tr>\
             <tr>\
-                <td colspan="2">' + (feature.properties['Lat'] !== null ? autolinker.link(feature.properties['Lat'].toLocaleString()) : '') + '</td>\
+                <td colspan="2"><i>Lattitude: </i>' + (feature.properties['Lat'] !== null ? autolinker.link(feature.properties['Lat'].toLocaleString()) : '') + '</td>\
             </tr>\
             <tr>\
-                <td colspan="2">' + (feature.properties['Long'] !== null ? autolinker.link(feature.properties['Long'].toLocaleString()) : '') + '</td>\
+                <td colspan="2"><i>Longitude: </i>' + (feature.properties['Long'] !== null ? autolinker.link(feature.properties['Long'].toLocaleString()) : '') + '</td>\
             </tr>\
         </table>';
     var content = removeEmptyRowsFromPopupContent(popupContent, feature);
@@ -209,7 +262,7 @@ function style_Study_sites_4_0() {
         weight: 1,
         fill: true,
         fillOpacity: 1,
-        fillColor: 'rgba(243,227,55,1.0)',
+        fillColor: '#EF9F18',
         interactive: true,
     }
 }
@@ -245,4 +298,34 @@ map.on("layerremove", function(){
     resetLabels([layer_Study_sites_4]);
 });
 
-map.fitBounds(layer_Catchment_polygons_3.getBounds());
+map.fitBounds(layer_Smith_river_streams_1.getBounds());
+
+var legend = L.control({ position: 'bottomright' });
+
+// Add content to the legend
+legend.onAdd = function(map) {
+    var div = L.DomUtil.create('div', 'info legend');
+    div.innerHTML = '<strong>Legend</strong><br>';
+    
+    // Define styles for the colored icons
+    div.innerHTML += '<i style="background: rgba(72,123,182,1.0); width: 20px; height: 4px; display: inline-block; margin-right: 5px; vertical-align: middle;"></i> Tributaries<br>';
+    div.innerHTML += '<i style="background: rgba(54,141,229,1.0); width: 20px; height: 6px; display: inline-block; margin-right: 5px; vertical-align: middle;"></i> Smith River <br>';
+    div.innerHTML += '<i style="background: rgba(38,89,128,1.0); width: 20px; height: 20px; display: inline-block; margin-right: 5px; vertical-align: middle;"></i> Catchment Areas<br>';
+    
+    // Triangle for Study Site
+    div.innerHTML += '<i style="border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 20px solid #EF9F18; display: inline-block; margin-right: 5px; vertical-align: middle;"></i> Study Site<br>';
+    
+    // Add background style to the legend
+    div.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+    div.style.padding = '10px';
+    div.style.borderRadius = '5px';
+    div.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.3)';
+    
+    return div;
+};
+
+// Add the legend to the map
+legend.addTo(map);
+
+
+

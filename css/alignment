@@ -1,0 +1,28 @@
+body {
+    display: flex;
+    flex-direction: column;  /* Stack maps vertically */
+    justify-content: center; /* Center content vertically */
+    align-items: center;     /* Center content horizontally */
+    text-align: center;      /* Center titles and text */
+    margin: auto;       /* Full viewport height */
+}
+
+.map {
+    display: flex;
+    justify-content: center;  /* Centers map horizontally */
+    align-items: center;      /* Centers map vertically */
+    height: 100vh;            /* Full viewport height */
+}
+
+.leaflet-popup-content-wrapper {
+    padding: 5px;
+    max-width: 250px;  /* Adjust max width */
+}
+
+.leaflet-popup-content {
+    padding: 0;  /* Remove any extra padding from the popup content */
+}
+
+.leaflet-popup-tip {
+    display: none; /* Optionally, hide the popup tip if not needed */
+}
