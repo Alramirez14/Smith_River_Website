@@ -13,6 +13,12 @@ body {
     align-items: center;      /* Centers map vertically */
 }
 
+#gif {
+    display: flex;
+    justify-content: center;  /* Centers map horizontally */
+    align-items: center;      /* Centers map vertically */
+}
+
 .leaflet-popup-content-wrapper {
     padding: 5px;
     max-width: 250px;  /* Adjust max width */
@@ -26,7 +32,3 @@ body {
     display: none; /* Optionally, hide the popup tip if not needed */
 }
 
-#map {
-    height: 400px;  /* Define the height */
-    width: 1000px;    /* Set width to fill its container */
-}
